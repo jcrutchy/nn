@@ -1,0 +1,7 @@
+{
+    "form_version": "20190829.1",
+    "form_type": "list",
+    "enabled": true,
+    "generate_stub": "\\nn\\home_page",
+    "page_id": "nn"
+}

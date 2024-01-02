@@ -1,0 +1,50 @@
+<b>Simple artificial neural network project</b>
+
+<hr>
+
+Test Card Number: #%%card_num%%
+<br>
+Correct Value: %%label%%
+<br>
+Network Guess: %%guess%%
+<br>
+Accuracy for 2000 tests: %%accuracy%%
+
+<br>
+
+<table><tr>
+<td>Test input layer nueron outputs</td>
+<td>Network hidden layer weights (trained neuron connections)</td>
+<td>Network hidden layer test nueron activations</td>
+<td>Network output layer weights (trained neuron connections)</td>
+<td>Network output layer test neuron activations (with guess probabilities)</td>
+</tr>
+<tr>
+<td>%%input_layer%%</td>
+<td>%%hidden_layer_map%%</td>
+<td>%%hidden_layer%%</td>
+<td>%%output_layer_map%%</td>
+<td>
+  <div style="display: flex; align-items: center;">
+    <div style="float: left;">%%output_layer%%</div>
+    <table>%%output_rows%%</table>
+  </div>
+</td>
+</tr>
+</table>
+
+MNIST data set of handwritten digits is used (reduced to 14x14 pixels each), with 8000 digits assigned for training and 2000 digits assigned for testing.
+<br>
+Project is based on a tutorial by Charles Fried, although in a different language (PHP instead of Processing) and uses procedural style instead of object orientation. The tutorial can be found <a href="https://medium.com/typeme/lets-code-a-neural-network-from-scratch-part-1-24f0a30d7d62">here</a>.
+<br>
+Layer weights (the elements of the network that are 'trained') are stored for the hidden and output layers in a JSON file each time the page is loaded/refreshed. If a saved file exists, those weights are loaded into the initialized network to restore its previously trained state.
+<br>
+Each time the page is loaded/refreshed (and after a previously saved trained state is loaded if available) the network is trained using a random sample of 5000 digits from the training set of 8000 digits. Training is compounded with the combination of page refresh, state restore and training (for example if the page is loaded and then refreshed, the network will have trained with a total of 10000 random samples from the training set). Each time you refresh the page, you will be able to see slight refinements of the layer weight maps (trained neuron connections) and there may be slight increases in guess probabilities as the network becomes more 'experienced' at learning digits.
+<br>
+Progressive accuracy of the network is established by running all 2000 test cases through the network (independent of training) and computing the % of network responses that matched the correct values.
+
+<hr>
+
+Sigmoid activation function:
+<br>
+%%sigmoid%%
