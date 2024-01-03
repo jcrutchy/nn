@@ -5,6 +5,7 @@ namespace nn;
 #####################################################################################################
 
 # https://github.com/CharlesFr/ANN_Tutorial
+# https://victorzhou.com/blog/intro-to-neural-networks/
 
 #####################################################################################################
 
@@ -64,11 +65,11 @@ function home_page($form_config)
 
   $chart_data=\webdb\chart\initilize_chart();
   $chart_data["h"]=300;
-  $chart_data["x_min"]=-5.2;
-  $chart_data["x_max"]=5.2;
-  $chart_data["y_min"]=-1.2;
-  $chart_data["y_max"]=1.2;
-  $chart_data["grid_x"]=0.1;
+  $chart_data["x_min"]=-10.2;
+  $chart_data["x_max"]=10.2;
+  $chart_data["y_min"]=-0.1;
+  $chart_data["y_max"]=1.1;
+  $chart_data["grid_x"]=0.2;
   $chart_data["grid_y"]=0.1;
   $chart_data=\webdb\chart\assign_plot_data($chart_data,$settings["nn_sigmoid"],0,1,"red","box",false,true);
   $page_params["sigmoid"]=\webdb\chart\output_chart($chart_data);
@@ -295,7 +296,7 @@ function network_guess(&$network)
 
 function normalize_neuron_input($input) # 0..255
 {
-  $norm=$input/255;
+  $norm=$input/256;
   return $norm; # 0..1
 }
 
@@ -303,7 +304,7 @@ function normalize_neuron_input($input) # 0..255
 
 function scale_neuron_output($norm) # 0..1
 {
-  $output=$norm*255;
+  $output=$norm*256;
   return intval(floor($output)); # 0..255
 }
 
@@ -450,20 +451,11 @@ function initialize_neuron(&$previous_layer)
   for ($i=0;$i<$n;$i++)
   {
     $neuron["inputs"][]=&$previous_layer[$i];
-    $neuron["weights"][]=\nn\random_weight();
+    $neuron["weights"][]=lcg_value();
   }
   $neuron["output"]=0.0;
   $neuron["error"]=0.0;
   return $neuron;
-}
-
-#####################################################################################################
-
-function random_weight()
-{
-  $min=0;
-  $max=1;
-  return $min+lcg_value()*(abs($max-$min));
 }
 
 #####################################################################################################
@@ -482,17 +474,11 @@ function neuron_respond(&$neuron)
 
 #####################################################################################################
 
-function neuron_set_error(&$neuron,$desired)
-{
-  $neuron["error"]=-($desired-$neuron["output"]); # changed from tutorial (negated result)
-}
-
-#####################################################################################################
-
 function neuron_train(&$neuron)
 {
   global $settings;
-  $delta=-(1-$neuron["output"])*(1+$neuron["output"])*$neuron["error"]*$settings["nn_learn_rate"];
+  # TODO: look @ https://victorzhou.com/blog/intro-to-neural-networks/
+  $delta=(1-$neuron["output"])*(1+$neuron["output"])*$neuron["error"]*$settings["nn_learn_rate"];
   $n=count($neuron["inputs"]);
   for ($i=0;$i<$n;$i++)
   {
@@ -509,7 +495,7 @@ function network_train(&$network,$outputs)
   $n=count($network["output_layer"]);
   for ($i=0;$i<$n;$i++)
   {
-    \nn\neuron_set_error($network["output_layer"][$i],$outputs[$i]);
+    $network["output_layer"][$i]["error"]=$outputs[$i]-$network["output_layer"][$i]["output"];
     \nn\neuron_train($network["output_layer"][$i]);
   }
 
@@ -541,7 +527,7 @@ function setup_sigmoid($size)
 {
   global $settings;
   $sigmoid=array();
-  $dx=10;
+  $dx=20;
   $m=($dx/2)/($size/2);
   $c=$size/2;
   for ($i=0;$i<=$size;$i++)
@@ -559,7 +545,7 @@ function setup_sigmoid($size)
 
 function sigmoid_function($x)
 {
-  return -(1+exp(2*$x));
+  return 1/(1+exp(-$x));
 }
 
 #####################################################################################################
