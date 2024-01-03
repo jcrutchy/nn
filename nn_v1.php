@@ -295,15 +295,19 @@ function network_guess(&$network)
 
 function normalize_neuron_input($input) # 0..255
 {
-  $norm=$input/255;
-  return $norm; # 0..1
+  # 256/128-1 = 1
+  # 0/128-1 = -1
+  $norm=$input/128-1;
+  return $norm; # -1..+1
 }
 
 #####################################################################################################
 
-function scale_neuron_output($norm) # 0..1
+function scale_neuron_output($norm) # -1..+1
 {
-  $output=$norm*255;
+  # (1+1)*128 = 256
+  # (-1+1)*128 = 0
+  $output=($norm+1)*128;
   return intval(floor($output)); # 0..255
 }
 
@@ -461,8 +465,8 @@ function initialize_neuron(&$previous_layer)
 
 function random_weight()
 {
-  $min=0;
-  $max=1;
+  $min=-1.0;
+  $max=1.0;
   return $min+lcg_value()*(abs($max-$min));
 }
 
@@ -484,6 +488,9 @@ function neuron_respond(&$neuron)
 
 function neuron_set_error(&$neuron,$desired)
 {
+  # desired = +1
+  # output = -0.9
+  # error = -1.9
   $neuron["error"]=-($desired-$neuron["output"]); # changed from tutorial (negated result)
 }
 
@@ -492,6 +499,11 @@ function neuron_set_error(&$neuron,$desired)
 function neuron_train(&$neuron)
 {
   global $settings;
+  # output = -0.9
+  # error = -1.9
+  # (1 - output) * (1 + output) = 0.19
+  # learn_rate = 0.01
+  # delta = 0.19 * -1.9 * 0.01 = -0.00361
   $delta=-(1-$neuron["output"])*(1+$neuron["output"])*$neuron["error"]*$settings["nn_learn_rate"];
   $n=count($neuron["inputs"]);
   for ($i=0;$i<$n;$i++)
@@ -546,7 +558,7 @@ function setup_sigmoid($size)
   $c=$size/2;
   for ($i=0;$i<=$size;$i++)
   {
-    $x=($i-$c)*$m;
+    $x=($i-$c)*$m; # -5 <= x <= 5
     $y=\nn\sigmoid_function($x);
     $sigmoid[]=array($x,$y);
   }
@@ -559,7 +571,7 @@ function setup_sigmoid($size)
 
 function sigmoid_function($x)
 {
-  return -(1+exp(2*$x));
+  return -(2/(1+exp(2*$x))-1);
 }
 
 #####################################################################################################

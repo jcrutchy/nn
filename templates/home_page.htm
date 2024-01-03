@@ -8,7 +8,7 @@ Correct Value: %%label%%
 <br>
 Network Guess: %%guess%%
 <br>
-Accuracy for 2000 tests: %%accuracy%%
+Accuracy for 2000 tests: %%accuracy%%%
 
 <br>
 
@@ -41,7 +41,7 @@ Layer weights (the elements of the network that are 'trained') are stored for th
 <br>
 Each time the page is loaded/refreshed (and after a previously saved trained state is loaded if available) the network is trained using a random sample of 5000 digits from the training set of 8000 digits. Training is compounded with the combination of page refresh, state restore and training (for example if the page is loaded and then refreshed, the network will have trained with a total of 10000 random samples from the training set). Each time you refresh the page, you will be able to see slight refinements of the layer weight maps (trained neuron connections) and there may be slight increases in guess probabilities as the network becomes more 'experienced' at learning digits.
 <br>
-Progressive accuracy of the network is established by running all 2000 test cases through the network (independent of training) and computing the % of network responses that matched the correct values.
+Progressive accuracy of the network is established by running all 2000 test cases through the network (testing and training sets are independent) and computing the % of network responses that matched the correct values. By repeatedly refreshing the page a few times, the network is able to reliably reach 90% accuracy.
 
 <hr>
 
